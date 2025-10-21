@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+
+# Docker
+*.log
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# HuggingFace cache (if running locally)
+.cache/
+
+# Model files (if any local models)
+*.bin
+*.safetensors
+*.gguf
+models/
+
+# Jupyter
+.ipynb_checkpoints/
