@@ -31,22 +31,15 @@ WORKDIR /app
 EXPOSE 23333
 
 # Set the model name as an environment variable (can be overridden)
-ENV MODEL_NAME=issai/InternVL3_5-4B-stage3-v8
+ENV MODEL_NAME=issai/Qolda
 ENV SERVER_PORT=23333
 ENV BACKEND=pytorch
 ENV TP=1
 ENV SESSION_LEN=32768
-ENV HF_TOKEN=""
 
 # Create startup script
 RUN echo '#!/bin/bash\n\
 set -e\n\
-\n\
-# Login to HuggingFace if token is provided\n\
-if [ -n "$HF_TOKEN" ]; then\n\
-    echo "Logging in to HuggingFace..."\n\
-    hf auth login --token "$HF_TOKEN" --add-to-git-credential\n\
-fi\n\
 \n\
 # Run lmdeploy serve api_server\n\
 exec lmdeploy serve api_server ${MODEL_NAME} \\\n\

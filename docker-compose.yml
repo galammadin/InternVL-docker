@@ -1,19 +1,17 @@
 services:
-  internvl-lmdeploy:
+  qolda-lmdeploy:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: internvl-lmdeploy
+    container_name: qolda-lmdeploy
     ports:
       - "23333:23333"
     environment:
-      - MODEL_NAME=issai/InternVL3_5-4B-stage3-v8
+      - MODEL_NAME=issai/Qolda
       - SERVER_PORT=23333
       - BACKEND=pytorch
       - TP=1
       - SESSION_LEN=32768
-      # IMPORTANT: Set your HuggingFace token here or in .env file
-      - HF_TOKEN=${HF_TOKEN}
     volumes:
       # Cache HuggingFace models to avoid re-downloading
       - huggingface-cache:/root/.cache/huggingface

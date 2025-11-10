@@ -1,6 +1,6 @@
-# InternVL Deployment with LMDeploy
+# Qolda Deployment with LMDeploy
 
-This Docker setup deploys InternVL using lmdeploy for serving the model via API.
+This Docker setup deploys Qolda, an open-source vision-language model, using lmdeploy for serving the model via API.
 
 ## Prerequisites
 
@@ -8,35 +8,10 @@ This Docker setup deploys InternVL using lmdeploy for serving the model via API.
 - Docker Compose
 - NVIDIA GPU with CUDA support
 - NVIDIA Container Toolkit
-- HuggingFace account with access to the model
-- HuggingFace access token
-
-## Setup
-
-### 1. Get HuggingFace Token
-
-1. Go to https://huggingface.co/settings/tokens
-2. Create a new token with read permissions
-3. Make sure you have access to the private model `issai/InternVL3_5-4B-stage3-v8`
-4. Request access to the model repository if you haven't already
-
-### 2. Configure Environment
-
-Create a `.env` file from the example:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and add your HuggingFace token:
-
-```
-HF_TOKEN=hf_your_actual_token_here
-```
-
-**IMPORTANT**: Never commit your `.env` file with the actual token!
 
 ## Quick Start
+
+The Qolda model is open source and publicly available. No authentication or setup required!
 
 ### Build and Run with Docker Compose
 
@@ -48,24 +23,23 @@ docker-compose up -d
 
 ```bash
 # Build the image
-docker build -t internvl-lmdeploy .
+docker build -t qolda-lmdeploy .
 
-# Run the container (replace YOUR_HF_TOKEN with your actual token)
+# Run the container
 docker run -d \
-  --name internvl-lmdeploy \
+  --name qolda-lmdeploy \
   --gpus all \
   -p 23333:23333 \
   --shm-size 8g \
-  -e HF_TOKEN=YOUR_HF_TOKEN \
   -v huggingface-cache:/root/.cache/huggingface \
-  internvl-lmdeploy
+  qolda-lmdeploy
 ```
 
 ## Configuration
 
 You can customize the deployment by modifying environment variables in [docker-compose.yml](docker-compose.yml):
 
-- `MODEL_NAME`: The HuggingFace model to deploy (default: `issai/InternVL3_5-4B-stage3-v8`)
+- `MODEL_NAME`: The HuggingFace model to deploy (default: `issai/Qolda`)
 - `SERVER_PORT`: API server port (default: `23333`)
 - `BACKEND`: Inference backend (default: `pytorch`)
 - `TP`: Tensor parallelism degree (default: `1`)
@@ -81,7 +55,7 @@ Once the container is running, you can access the API at `http://localhost:23333
 curl http://localhost:23333/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "issai/InternVL3_5-4B-stage3-v8",
+    "model": "issai/Qolda",
     "messages": [{"role": "user", "content": "Hello!"}]
   }'
 ```
@@ -97,7 +71,7 @@ docker-compose logs -f
 Or with Docker:
 
 ```bash
-docker logs -f internvl-lmdeploy
+docker logs -f qolda-lmdeploy
 ```
 
 ## Stop and Remove
@@ -109,33 +83,31 @@ docker-compose down
 Or with Docker:
 
 ```bash
-docker stop internvl-lmdeploy
-docker rm internvl-lmdeploy
+docker stop qolda-lmdeploy
+docker rm qolda-lmdeploy
 ```
-
-## Security Notes
-
-- **Never commit your `.env` file** with the actual HuggingFace token
-- The `.env` file is already in `.dockerignore` and should be in `.gitignore`
-- You can also pass the token via command line, but environment files are safer
 
 ## Troubleshooting
 
-### Authentication Errors
-
-If you get authentication errors:
-1. Verify your HuggingFace token is correct
-2. Ensure you have access to the model `issai/InternVL3_5-4B-stage3-v8`
-3. Check that the token has read permissions
-
 ### Model Download Issues
 
-- The first run will download the model from HuggingFace, which may take some time
+- The first run will download the Qolda model from HuggingFace (no authentication required)
+- This may take some time depending on your internet connection
 - Model files are cached in a Docker volume to avoid re-downloading
-- Ensure you have sufficient disk space for the model
+- Ensure you have sufficient disk space for the model (~8GB)
+
+### GPU Errors
+
+- Ensure NVIDIA drivers are properly installed
+- Verify NVIDIA Container Toolkit is configured correctly
+- Check GPU availability with: `docker run --rm --gpus all nvidia/cuda:12.4.0-base-ubuntu22.04 nvidia-smi`
 
 ## Notes
 
 - Adjust `shm_size` if you encounter shared memory errors
-- Ensure your GPU has sufficient VRAM for the model
-- The container will automatically login to HuggingFace if `HF_TOKEN` is provided
+- Ensure your GPU has sufficient VRAM for the model (minimum 8GB recommended)
+- Qolda is fully open source and can be freely used and modified
+
+## About Qolda
+
+Qolda is an open-source vision-language model fine-tuned for multimodal understanding. The model is available on HuggingFace at [issai/Qolda](https://huggingface.co/issai/Qolda).
